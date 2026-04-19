@@ -25,10 +25,8 @@ function normalisePair(raw = "") {
 }
 
 export default function App() {
-  // State: Images
-  const [imgB64, setImgB64] = useState(null);
-  const [imgPrev, setImgPrev] = useState(null);
-  const [imgType, setImgType] = useState("image/jpeg");
+  // State: Images (Multi-Timeframe Support)
+  const [charts, setCharts] = useState([]); // Array of { b64, preview, mimeType }
 
   // State: Pair
   const [confirmedPair, setConfirmedPair] = useState(null);
@@ -133,19 +131,17 @@ export default function App() {
     }
   };
 
-  const doChartAnalysis = async (base64, pair, mimeType) => {
+  const doChartAnalysis = async (chartsData, pair) => {
+    const parts = [
+      {
+        text: `You are a technical analysis expert. Analyse these ${pair} chart(s) carefully. They may represent the same asset across different timeframes (Top-Down Analysis). Return raw JSON ONLY: {\"trend\":\"...\",\"support\":\"...\",\"resistance\":\"...\",\"patterns\":[\"...\"],\"indicators\":\"...\",\"summary\":\"...\",\"sentiment\":\"BULLISH or BEARISH or NEUTRAL\"}`,
+      },
+      ...chartsData.map((c) => formatGeminiImage(c.b64, c.mimeType)),
+    ];
+
     const text = await callGeminiAPI(
       {
-        contents: [
-          {
-            parts: [
-              {
-                text: `You are a technical analysis expert. Analyse this ${pair} chart carefully. Return raw JSON ONLY: {\"trend\":\"...\",\"support\":\"...\",\"resistance\":\"...\",\"patterns\":[\"...\"],\"indicators\":\"...\",\"summary\":\"...\",\"sentiment\":\"BULLISH or BEARISH or NEUTRAL\"}`,
-              },
-              formatGeminiImage(base64, mimeType),
-            ],
-          },
-        ],
+        contents: [{ parts }],
       },
       settings,
     );
@@ -209,56 +205,78 @@ export default function App() {
 
   // ── Handlers ───────────────────────────────────────────────────────────────
 
-  const handleFile = useCallback(
-    async (file) => {
-      if (!file || !file.type.startsWith("image/")) return;
+  const handleFiles = useCallback(
+    async (fileList) => {
+      const newFiles = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
+      if (newFiles.length === 0) return;
+
       setResult(null);
       setError(null);
-      setDetected(null);
-      setConfirmedPair(null);
+      
+      const newCharts = await Promise.all(
+        newFiles.slice(0, 3).map(async (file) => {
+          const mimeType = file.type || "image/jpeg";
+          const b64 = await new Promise((res) => {
+            const r = new FileReader();
+            r.onload = (e) => res(e.target.result.split(",")[1]);
+            r.readAsDataURL(file);
+          });
+          const preview = await new Promise((res) => {
+            const r = new FileReader();
+            r.onload = (e) => res(e.target.result);
+            r.readAsDataURL(file);
+          });
+          return { b64, preview, mimeType };
+        })
+      );
 
-      const mimeType = file.type || "image/jpeg";
-      setImgType(mimeType);
-
-      const b64 = await new Promise((res) => {
-        const r = new FileReader();
-        r.onload = (e) => res(e.target.result.split(",")[1]);
-        r.readAsDataURL(file);
+      setCharts((prev) => {
+        const combined = [...prev, ...newCharts].slice(0, 3); // Max 3 charts
+        return combined;
       });
-      const preview = await new Promise((res) => {
-        const r = new FileReader();
-        r.onload = (e) => res(e.target.result);
-        r.readAsDataURL(file);
-      });
-      setImgPrev(preview);
-      setImgB64(b64);
 
       if (!settings.apiKey && !settings.proxyUrl) {
         setError("Please enter your API Key in Settings first.");
         return;
       }
 
-      setDetecting(true);
-      try {
-        const det = await doDetectPair(b64, mimeType);
-        const normalised = normalisePair(det.pair || "");
-        setDetected({
-          ...det,
-          pair: normalised || det.pair,
-          valid: !!normalised && det.pair !== "UNKNOWN",
-        });
-      } catch (e) {
-        setError("Failed to detect pair. Please select manually.");
-      } finally {
-        setDetecting(false);
+      // Only run detection if we don't have a confirmed pair and are adding the first chart
+      if (!confirmedPair && !detected && newCharts.length > 0) {
+        setDetecting(true);
+        try {
+          const firstChart = newCharts[0];
+          const det = await doDetectPair(firstChart.b64, firstChart.mimeType);
+          const normalised = normalisePair(det.pair || "");
+          setDetected({
+            ...det,
+            pair: normalised || det.pair,
+            valid: !!normalised && det.pair !== "UNKNOWN",
+          });
+        } catch (e) {
+          setError("Failed to detect pair. Please select manually.");
+        } finally {
+          setDetecting(false);
+        }
       }
     },
-    [settings],
+    [settings, confirmedPair, detected],
   );
 
+  const removeChart = (index) => {
+    setCharts((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      if (next.length === 0) {
+        setDetected(null);
+        setConfirmedPair(null);
+        setResult(null);
+        setReport(null);
+      }
+      return next;
+    });
+  };
+
   const reset = () => {
-    setImgB64(null);
-    setImgPrev(null);
+    setCharts([]);
     setConfirmedPair(null);
     setResult(null);
     setReport(null);
@@ -267,13 +285,13 @@ export default function App() {
   };
 
   const analyse = async () => {
-    if (!imgB64 || !confirmedPair) return;
+    if (charts.length === 0 || !confirmedPair) return;
     setLoading(true);
     setResult(null);
     setError(null);
     try {
       setStep(1);
-      const tech = await doChartAnalysis(imgB64, confirmedPair, imgType);
+      const tech = await doChartAnalysis(charts, confirmedPair);
       setStep(2);
       const news = await doNewsSearch(confirmedPair);
       setStep(3);
@@ -454,18 +472,19 @@ export default function App() {
       {/* Main UI */}
       <div style={{ display: "grid", gap: "24px" }}>
         <UploadZone
-          imgPrev={imgPrev}
+          charts={charts}
           detecting={detecting}
           detected={detected}
           confirmedPair={confirmedPair}
-          onFileSelect={handleFile}
+          onFilesSelect={handleFiles}
+          onRemoveChart={removeChart}
           onConfirmPair={() => setConfirmedPair(detected.pair)}
           onPickPair={(p) => setConfirmedPair(p)}
         />
 
         <button
           onClick={analyse}
-          disabled={loading || !imgB64 || !confirmedPair}
+          disabled={loading || charts.length === 0 || !confirmedPair}
           style={{
             width: "100%",
             padding: "18px",
@@ -488,11 +507,11 @@ export default function App() {
         >
           {loading
             ? `Analyzing Market Data...`
-            : !imgB64
+            : charts.length === 0
               ? "Upload Chart to Begin"
               : !confirmedPair
                 ? "Confirm Pair to Analyze"
-                : "Execute Market Analysis"}
+                : "Execute Multi-Timeframe Analysis"}
         </button>
 
         {error && (

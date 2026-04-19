@@ -15,11 +15,12 @@ const SectionTitle = ({ children }) => (
 );
 
 export default function UploadZone({
-  imgPrev,
+  charts = [],
   detecting,
   detected,
   confirmedPair,
-  onFileSelect,
+  onFilesSelect,
+  onRemoveChart,
   onConfirmPair,
   onPickPair,
 }) {
@@ -70,72 +71,91 @@ export default function UploadZone({
         onDrop={(e) => {
           e.preventDefault();
           setDrag(false);
-          onFileSelect(e.dataTransfer.files[0]);
+          onFilesSelect(e.dataTransfer.files);
         }}
-        onClick={() => !detecting && fileRef.current.click()}
+        onClick={() => !detecting && charts.length < 3 && fileRef.current.click()}
         style={{
           border: `1px dashed ${drag ? "var(--accent-secondary)" : "var(--border-color)"}`,
           background: drag
             ? "rgba(59, 130, 246, 0.05)"
             : "rgba(255, 255, 255, 0.02)",
           borderRadius: "12px",
-          padding: imgPrev ? 0 : "48px 20px",
+          padding: charts.length > 0 ? "20px" : "48px 20px",
           textAlign: "center",
-          cursor: detecting ? "wait" : "pointer",
+          cursor: detecting ? "wait" : charts.length < 3 ? "pointer" : "default",
           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           overflow: "hidden",
           position: "relative",
           marginBottom: "24px",
         }}
       >
-        {imgPrev ? (
-          <div style={{ position: "relative" }}>
-            <img
-              src={imgPrev}
-              alt="chart"
-              style={{
-                width: "100%",
-                maxHeight: "350px",
-                objectFit: "contain",
-                display: "block",
-                background: "#000",
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(to top, rgba(6, 8, 12, 0.9) 0%, transparent 60%)",
-                display: "flex",
-                alignItems: "flex-end",
-                justifyContent: "center",
-                padding: "20px",
-              }}
-            >
-              {detecting ? (
-                <span
-                  style={{
-                    color: "var(--accent-gold)",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    animation: "pulse 1.5s infinite",
-                  }}
-                >
-                  System processing visual data...
-                </span>
-              ) : (
-                <span
-                  style={{
-                    color: "var(--text-secondary)",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Click or drag to replace analysis source
-                </span>
-              )}
+        {charts.length > 0 ? (
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(charts.length, 3)}, 1fr)`, gap: "12px" }}>
+              {charts.map((chart, idx) => (
+                <div key={idx} style={{ position: "relative", borderRadius: "8px", overflow: "hidden", border: "1px solid var(--border-color)", aspectRatio: "16/9" }}>
+                  <img
+                    src={chart.preview}
+                    alt={`chart-${idx}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                      background: "#000",
+                    }}
+                  />
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onRemoveChart(idx); }}
+                    style={{
+                      position: "absolute",
+                      top: "8px",
+                      right: "8px",
+                      background: "rgba(239, 68, 68, 0.8)",
+                      border: "none",
+                      color: "#fff",
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "14px",
+                      zIndex: 10,
+                    }}
+                  >
+                    ×
+                  </button>
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      background: "linear-gradient(to top, rgba(6, 8, 12, 0.9) 0%, transparent 100%)",
+                      padding: "16px 8px 8px",
+                      fontSize: "11px",
+                      color: "var(--text-secondary)",
+                      textAlign: "left",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Chart {idx + 1}
+                  </div>
+                </div>
+              ))}
             </div>
+            
+            {detecting ? (
+              <div style={{ marginTop: "16px", color: "var(--accent-gold)", fontSize: "13px", fontWeight: 600, animation: "pulse 1.5s infinite" }}>
+                System processing visual data...
+              </div>
+            ) : charts.length < 3 ? (
+              <div style={{ marginTop: "16px", color: "var(--text-secondary)", fontSize: "13px", fontWeight: 500 }}>
+                + Add up to {3 - charts.length} more timeframe(s)
+              </div>
+            ) : null}
           </div>
         ) : (
           <div style={{ animation: "fadeIn 0.5s ease" }}>
@@ -168,9 +188,10 @@ export default function UploadZone({
       <input
         ref={fileRef}
         type="file"
+        multiple
         accept="image/*"
         style={{ display: "none" }}
-        onChange={(e) => onFileSelect(e.target.files[0])}
+        onChange={(e) => onFilesSelect(e.target.files)}
       />
 
       {/* Detection Info */}
@@ -259,7 +280,7 @@ export default function UploadZone({
       )}
 
       {/* Manual Selection Fallback */}
-      {!detecting && !detected && imgPrev && !confirmedPair && !showPicker && (
+      {!detecting && !detected && charts.length > 0 && !confirmedPair && !showPicker && (
         <div
           style={{
             background: "rgba(245, 158, 11, 0.03)",
