@@ -357,53 +357,53 @@ export default function App() {
             onClick={reset}
             title="Home / Reset"
             style={{
-              width: 42,
-              height: 42,
-              borderRadius: "12px",
-              background: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid var(--border-color)",
-              color: "var(--text-secondary)",
+              padding: "10px 18px",
+              borderRadius: "20px",
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              color: "var(--text-primary)",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              fontSize: "20px",
+              gap: "8px",
+              fontSize: "14px",
+              fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s ease",
             }}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)")
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)")
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.03)")
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)")
             }
           >
-            ⌂
+            <span style={{ fontSize: "16px" }}>⌂</span> Home
           </button>
           <button
             onClick={() => setShowSettings(true)}
             title="Settings"
             style={{
-              width: 42,
-              height: 42,
-              borderRadius: "12px",
-              background: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid var(--border-color)",
-              color: "var(--text-secondary)",
+              padding: "10px 18px",
+              borderRadius: "20px",
+              background: "rgba(255, 255, 255, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              color: "var(--text-primary)",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              fontSize: "20px",
+              gap: "8px",
+              fontSize: "14px",
+              fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s ease",
             }}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)")
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)")
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.03)")
+              (e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)")
             }
           >
-            ⚙
+            <span style={{ fontSize: "16px" }}>⚙</span> Settings
           </button>
         </div>
 

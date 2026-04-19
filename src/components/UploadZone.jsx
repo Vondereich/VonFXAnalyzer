@@ -176,11 +176,15 @@ export default function UploadZone({
             <div
               style={{
                 color: "var(--text-muted)",
-                fontSize: "12px",
-                marginTop: "8px",
+                fontSize: "13px",
+                marginTop: "12px",
+                lineHeight: "1.6",
               }}
             >
-              Drag and drop PNG, JPG or WEBP analysis
+              Drag and drop 1 to 3 charts (PNG, JPG, WEBP).<br />
+              <strong style={{ color: "var(--accent-secondary)" }}>
+                Tip: Prepare 2-3 pictures with different timeframes (e.g. H4, H1, M15) for Top-Down Analysis.
+              </strong>
             </div>
           </div>
         )}
