@@ -22,12 +22,41 @@ GeoFX Analyst is a high-performance, premium dashboard designed for forex trader
 - **Styling**: Modern CSS with CSS Variables & Glassmorphism
 - **Deployment**: Automated release workflow for optimized builds.
 
-## 🚀 Getting Started
+## 🚀 Local Setup & Development
 
-1.  **Installation**: `npm install`
-2.  **Development**: `npm run dev`
-3.  **Build**: `npm run build`
-4.  **Release**: `npm run release` (Generates a clean `VonAnalyzer.zip`)
+Follow these steps to get the terminal running on your local machine:
+
+### 1. Prerequisites
+Ensure you have **Node.js (v18+)** and **npm** installed on your system.
+
+### 2. Installation
+Clone the repository and install the dependencies:
+```bash
+git clone https://github.com/Vondereich/VonFXAnalyzer.git
+cd VonFXAnalyzer
+npm install
+```
+
+### 3. Development
+Start the local development server:
+```bash
+npm run dev
+```
+Once started, open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### 4. Production Build
+To generate an optimized production bundle:
+```bash
+npm run build
+```
+The output will be available in the `dist/` directory.
+
+### 5. Automated Release
+To clean, build, and package the application into a ZIP file:
+```bash
+npm run release
+```
+This generates `VonAnalyzer.zip` in the root directory.
 
 ## ⚙️ Configuration
 
