@@ -58,6 +58,19 @@ npm run release
 ```
 This generates `VonAnalyzer.zip` in the root directory.
 
+## 🌐 Traditional Hosting (XAMPP / Laragon / WAMP)
+
+If you prefer to host this terminal using a traditional web server (Apache/Nginx) or local environments like XAMPP, Laragon, or WAMP:
+
+1.  **Build the Project**: Run `npm run build`.
+2.  **Locate the Build**: Go to the `dist/` folder.
+3.  **Deployment**: Copy **all files inside** the `dist/` folder and paste them into your server's public directory:
+    *   **XAMPP**: `C:\xampp\htdocs\vonalanalyzer\`
+    *   **Laragon**: `C:\laragon\www\vonalanalyzer\`
+    *   **WAMP**: `C:\wamp64\www\vonalanalyzer\`
+4.  **PHP Proxy (Optional)**: If your hosting environment supports PHP and you face CORS issues, you can use the included `proxy.php`. Simply point your **Proxy URL** in the app settings to `http://localhost/vonalanalyzer/proxy.php`.
+5.  **Access**: Open your browser and go to `http://localhost/vonalanalyzer/`.
+
 ## ⚙️ Configuration
 
 Open the **Terminal Settings** (⚙) within the app to:
