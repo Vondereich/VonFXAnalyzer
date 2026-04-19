@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2026-04-19
+
+### 🚀 Added
+
+- **Multi-Timeframe Synthesis**: Support for uploading and analyzing up to 3 charts simultaneously (Top-Down Analysis).
+- **Internationalization**: Translated the entire UI, system logs, and error messages from Malay to English for global reach.
+
+### 🔧 Changed
+
+- **Upload UX Enhancement**: Clarified drag-and-drop instructions with tooltips for multi-timeframe capability.
+- **Navigation UI**: Upgraded the small Home and Settings icons to larger, text-labeled pill buttons for better accessibility.
+- **Repository Cleanup**: Removed tracked build artifacts (`*.zip`) and optimized `.gitignore` for a cleaner GitHub presence.
+- **Documentation**: Expanded README.md with detailed local setup and traditional hosting instructions (XAMPP/Laragon).
+
+---
+
 ## [0.1.2] - 2026-04-17
 
 ### 🚀 Added

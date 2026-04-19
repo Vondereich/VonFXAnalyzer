@@ -1,4 +1,4 @@
-# GeoFX Analyst v0.1.2 🚀
+# GeoFX Analyst v0.1.3 🚀
 
 **Advanced AI-driven Market Analysis Terminal**
 
@@ -8,8 +8,8 @@ GeoFX Analyst is a high-performance, premium dashboard designed for forex trader
 
 ## ✨ Key Features
 
+- **Multi-Timeframe Synthesis**: Upload up to 3 charts (e.g. H4, H1, M15) for AI-driven Top-Down Analysis.
 - **Deep Chart Vision**: Automated instrument detection using Chain-of-Thought OCR logic.
-
 * **Intelligence Engine**: Powered by the latest Gemini 3.1 & 2.5 families (April 2026 specs).
 * **Geopolitical Grounding**: Real-time analysis of news affecting specific currency pairs.
 * **Premium Aesthetic**: Sophisticated dark-mode dashboard with golden accents and glassmorphism.
