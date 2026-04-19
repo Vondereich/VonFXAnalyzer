@@ -448,7 +448,7 @@ export default function App() {
               textTransform: "uppercase",
             }}
           >
-            Premium Analysis Engine v0.1.2
+            Premium Analysis Engine v0.1.3
           </span>
         </div>
 
