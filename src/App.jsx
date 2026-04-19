@@ -44,7 +44,18 @@ export default function App() {
   // State: Settings
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState(() => {
-    let savedModel = localStorage.getItem("geofx_model");
+    // Migration: Move old 'geofx_' keys to 'vonfx_'
+    if (localStorage.getItem("geofx_apiKey") && !localStorage.getItem("vonfx_apiKey")) {
+      localStorage.setItem("vonfx_apiKey", localStorage.getItem("geofx_apiKey"));
+      localStorage.setItem("vonfx_proxyUrl", localStorage.getItem("geofx_proxyUrl") || "");
+      localStorage.setItem("vonfx_model", localStorage.getItem("geofx_model") || "");
+      // Clean up old keys
+      localStorage.removeItem("geofx_apiKey");
+      localStorage.removeItem("geofx_proxyUrl");
+      localStorage.removeItem("geofx_model");
+    }
+
+    let savedModel = localStorage.getItem("vonfx_model");
     // Migration for old or deprecated model names
     const deprecated = [
       "gemini-1.5-flash",
@@ -55,11 +66,11 @@ export default function App() {
     ];
     if (!savedModel || deprecated.includes(savedModel)) {
       savedModel = "gemini-3.1-flash-lite-preview";
-      localStorage.setItem("geofx_model", savedModel);
+      localStorage.setItem("vonfx_model", savedModel);
     }
     return {
-      apiKey: localStorage.getItem("geofx_apiKey") || "",
-      proxyUrl: localStorage.getItem("geofx_proxyUrl") || "",
+      apiKey: localStorage.getItem("vonfx_apiKey") || "",
+      proxyUrl: localStorage.getItem("vonfx_proxyUrl") || "",
       model: savedModel,
     };
   });
@@ -67,9 +78,9 @@ export default function App() {
   // Save settings to localStorage
   const saveSettings = (newSettings) => {
     setSettings(newSettings);
-    localStorage.setItem("geofx_apiKey", newSettings.apiKey);
-    localStorage.setItem("geofx_proxyUrl", newSettings.proxyUrl);
-    localStorage.setItem("geofx_model", newSettings.model);
+    localStorage.setItem("vonfx_apiKey", newSettings.apiKey);
+    localStorage.setItem("vonfx_proxyUrl", newSettings.proxyUrl);
+    localStorage.setItem("vonfx_model", newSettings.model);
   };
 
   // ── API Actions ────────────────────────────────────────────────────────────
@@ -451,7 +462,7 @@ export default function App() {
             lineHeight: 1.1,
           }}
         >
-          GeoFX Analyst
+          VonFX Analyzer
         </h1>
 
         <p
