@@ -2,6 +2,8 @@
 
 **Advanced AI-driven Market Analysis Terminal**
 
+![GeoFX Analyst Terminal Interface](./public/screenshot.png)
+
 GeoFX Analyst is a high-performance, premium dashboard designed for forex traders and market analysts. It combines state-of-the-art visual intelligence (Gemini 3.1) with real-time geopolitical grounding to provide professional-grade trading insights.
 
 ## ✨ Key Features
