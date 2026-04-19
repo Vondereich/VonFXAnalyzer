@@ -234,7 +234,7 @@ export default function App() {
       setImgB64(b64);
 
       if (!settings.apiKey && !settings.proxyUrl) {
-        setError("Sila masukkan API Key dalam Settings dahulu.");
+        setError("Please enter your API Key in Settings first.");
         return;
       }
 
@@ -248,7 +248,7 @@ export default function App() {
           valid: !!normalised && det.pair !== "UNKNOWN",
         });
       } catch (e) {
-        setError("Gagal mengesan pair. Sila pilih manual.");
+        setError("Failed to detect pair. Please select manually.");
       } finally {
         setDetecting(false);
       }
@@ -280,7 +280,7 @@ export default function App() {
       const reco = await doRecommendation(confirmedPair, tech, news);
       setResult({ tech, news, reco });
     } catch (e) {
-      setError(e.message || "Analisis gagal. Sila semak API Key atau Proxy.");
+      setError(e.message || "Analysis failed. Please check your API Key or Proxy.");
     } finally {
       setLoading(false);
       setStep(0);
@@ -299,7 +299,7 @@ export default function App() {
       );
       setReport(text);
     } catch (e) {
-      setError("Gagal menjana laporan penuh.");
+      setError("Failed to generate full report.");
     } finally {
       setLoadingReport(false);
     }
