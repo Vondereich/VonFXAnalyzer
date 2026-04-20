@@ -166,7 +166,7 @@ export default function App() {
           {
             parts: [
               {
-                text: `Search for the latest news affecting ${pair}. Provide impact and details. Return raw JSON array ONLY: [{\"headline\":\"...\",\"impact\":\"POSITIVE\",\"currency\":\"...\",\"detail\":\"...\"}]`,
+                text: `Search for the latest news affecting ${pair} from the last 48 hours. Provide impact and details. Return raw JSON array ONLY: [{\"headline\":\"...\",\"impact\":\"POSITIVE\",\"currency\":\"...\",\"detail\":\"...\"}]`,
               },
             ],
           },

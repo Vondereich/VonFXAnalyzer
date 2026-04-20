@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.4] - 2026-04-20
 
+### 🚀 Added
+
+- **News Timeframe Filtering**: Optimized news search engine to focus on the latest events within a 48-hour window for better trading relevance.
+
 ### 🔧 Fixed
 
 - **Subdirectory Deployment**: Switched to relative asset paths in `vite.config.js` to support Laragon/XAMPP subfolders and traditional shared hosting.
