@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2026-04-20
+
+### 🔧 Fixed
+
+- **Subdirectory Deployment**: Switched to relative asset paths in `vite.config.js` to support Laragon/XAMPP subfolders and traditional shared hosting.
+
 ## [0.1.3] - 2026-04-19
 
 ### 🚀 Added

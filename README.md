@@ -1,4 +1,4 @@
-# VonFX Analyzer v0.1.3 🚀
+# VonFX Analyzer v0.1.4 🚀
 
 **Advanced AI-driven Market Analysis Terminal**
 
