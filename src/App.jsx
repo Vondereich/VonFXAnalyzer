@@ -81,7 +81,8 @@ export default function App() {
   // Save settings to localStorage
   const saveSettings = (newSettings) => {
     setSettings(newSettings);
-    localStorage.setItem("vonfx_apiKey", newSettings.apiKey);
+    // Security: never persist API keys in localStorage
+    localStorage.removeItem("vonfx_apiKey");
     localStorage.setItem("vonfx_proxyUrl", newSettings.proxyUrl);
     localStorage.setItem("vonfx_model", newSettings.model);
   };
