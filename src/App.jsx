@@ -44,16 +44,18 @@ export default function App() {
   // State: Settings
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState(() => {
-    // Migration: Move old 'geofx_' keys to 'vonfx_'
-    if (localStorage.getItem("geofx_apiKey") && !localStorage.getItem("vonfx_apiKey")) {
-      localStorage.setItem("vonfx_apiKey", localStorage.getItem("geofx_apiKey"));
+    // Migration: Move old non-sensitive 'geofx_' keys to 'vonfx_'
+    if (localStorage.getItem("geofx_proxyUrl") && !localStorage.getItem("vonfx_proxyUrl")) {
       localStorage.setItem("vonfx_proxyUrl", localStorage.getItem("geofx_proxyUrl") || "");
-      localStorage.setItem("vonfx_model", localStorage.getItem("geofx_model") || "");
-      // Clean up old keys
-      localStorage.removeItem("geofx_apiKey");
-      localStorage.removeItem("geofx_proxyUrl");
-      localStorage.removeItem("geofx_model");
     }
+    if (localStorage.getItem("geofx_model") && !localStorage.getItem("vonfx_model")) {
+      localStorage.setItem("vonfx_model", localStorage.getItem("geofx_model") || "");
+    }
+    // API keys must not be persisted in localStorage
+    localStorage.removeItem("geofx_apiKey");
+    localStorage.removeItem("vonfx_apiKey");
+    localStorage.removeItem("geofx_proxyUrl");
+    localStorage.removeItem("geofx_model");
 
     let savedModel = localStorage.getItem("vonfx_model");
     // Migration for old or deprecated model names
@@ -69,16 +71,16 @@ export default function App() {
       localStorage.setItem("vonfx_model", savedModel);
     }
     return {
-      apiKey: localStorage.getItem("vonfx_apiKey") || "",
+      // Keep API key only in memory; do not load from persistent storage
+      apiKey: "",
       proxyUrl: localStorage.getItem("vonfx_proxyUrl") || "",
       model: savedModel,
     };
   });
 
-  // Save settings to localStorage
+  // Save settings (persist only non-sensitive values)
   const saveSettings = (newSettings) => {
     setSettings(newSettings);
-    localStorage.setItem("vonfx_apiKey", newSettings.apiKey);
     localStorage.setItem("vonfx_proxyUrl", newSettings.proxyUrl);
     localStorage.setItem("vonfx_model", newSettings.model);
   };
